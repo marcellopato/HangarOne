@@ -4,6 +4,7 @@ import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import ClubsPage from './pages/ClubsPage';
 import HangarsPage from './pages/HangarsPage';
+import PilotsPage from './pages/PilotsPage';
 import Layout from './components/Layout';
 
 interface User {
@@ -67,8 +68,8 @@ function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/clubs" element={<ClubsPage />} />
           <Route path="/hangars" element={<HangarsPage />} />
+          <Route path="/pilots" element={<PilotsPage />} />
           {/* Placeholder routes - páginas serão criadas posteriormente */}
-          <Route path="/pilots" element={<div className="text-center py-12"><h2 className="text-2xl font-bold text-gray-700">Página de Pilotos em desenvolvimento</h2></div>} />
           <Route path="/aircraft" element={<div className="text-center py-12"><h2 className="text-2xl font-bold text-gray-700">Página de Aeronaves em desenvolvimento</h2></div>} />
           <Route path="/documents" element={<div className="text-center py-12"><h2 className="text-2xl font-bold text-gray-700">Página de Documentos em desenvolvimento</h2></div>} />
           <Route path="/reports" element={<div className="text-center py-12"><h2 className="text-2xl font-bold text-gray-700">Página de Relatórios em desenvolvimento</h2></div>} />

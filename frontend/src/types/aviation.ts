@@ -19,6 +19,20 @@ export interface Pilot {
   birthDate: string; // ISO
   license: string; // letras e números
   clubId: number; // Aeroclube ao qual pertence
+  clubName?: string; // Nome do aeroclube (preenchido pelo backend)
+  bloodType?: string;
+  emergencyContact?: string;
+  medicalInsurance?: string;
+  medications?: string[];
+  restrictions?: string[];
+  photo?: string;
+  paymentDate?: string;
+  hangar?: string;
+  documents?: string[];
+  isActive?: boolean;
+  isPaymentUpToDate?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Aircraft {
