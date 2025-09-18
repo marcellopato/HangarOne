@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 
-// Importar rotas
+// Importar rotas e controllers
 const apiRoutes = require('./routes');
+const UserController = require('./controllers/UserController');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -77,8 +78,12 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Inicializar dados padrão
+UserController.initializeDefaultUsers();
+
 app.listen(PORT, () => {
   console.log(`🚁 HangarOne Backend rodando na porta ${PORT}`);
   console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/login`);
 });

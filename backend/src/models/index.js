@@ -4,6 +4,7 @@
  */
 
 
+const User = require('./User');
 const Club = require('./Club');
 const Pilot = require('./Pilot');
 const Aircraft = require('./Aircraft');
@@ -14,6 +15,7 @@ const Maintenance = require('./Maintenance');
 const Payment = require('./Payment');
 
 module.exports = {
+  User,
   Club,
   Pilot,
   Aircraft,
