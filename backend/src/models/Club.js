@@ -12,6 +12,7 @@ class Club {
     email,
     responsiblePerson,
     requiredDocuments = [],
+    hangars = [], // Array de hangares do aeroclube
     isActive = true,
     createdAt = new Date(),
     updatedAt = new Date()
@@ -24,6 +25,7 @@ class Club {
     this.email = email;
     this.responsiblePerson = responsiblePerson;
     this.requiredDocuments = requiredDocuments; // Lista de documentos exigidos pelo aeroclube
+    this.hangars = hangars; // Lista de hangares do aeroclube
     this.isActive = isActive;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -70,6 +72,7 @@ class Club {
       email: this.email,
       responsiblePerson: this.responsiblePerson,
       requiredDocuments: this.requiredDocuments,
+      hangars: this.hangars,
       isActive: this.isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import ClubsPage from './pages/ClubsPage';
+import HangarsPage from './pages/HangarsPage';
 
 // Componente de Layout com Navegação
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -9,13 +10,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: '🏠' },
     { path: '/clubs', label: 'Aeroclubes', icon: '🏢' },
+    { path: '/hangars', label: 'Hangares', icon: '🏚️' },
     { path: '/pilots', label: 'Pilotos', icon: '👨‍✈️' },
     { path: '/aircraft', label: 'Aeronaves', icon: '✈️' },
     { path: '/flights', label: 'Voos', icon: '🛫' },
     { path: '/maintenance', label: 'Manutenção', icon: '🔧' },
     { path: '/payments', label: 'Pagamentos', icon: '💰' },
   ];
-
   return (
     <div className="main-bg">
       {/* Header */}
@@ -49,7 +50,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </nav>
 
       {/* Main Content */}
-      <main className="main-content">
+  <main className="main-content" style={{ width: '100%' }}>
         {children}
       </main>
     </div>
@@ -169,6 +170,7 @@ function App() {
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/clubs" element={<ClubsPage />} />
+          <Route path="/hangars" element={<HangarsPage />} />
           <Route path="/pilots" element={<PilotsPage />} />
           <Route path="/aircraft" element={<AircraftPage />} />
           <Route path="/flights" element={<FlightsPage />} />

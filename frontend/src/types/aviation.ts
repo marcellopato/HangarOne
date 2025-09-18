@@ -4,6 +4,10 @@ export interface Hangar {
   id: number;
   name: string;
   clubId: number; // Aeroclube ao qual pertence
+  location?: string;
+  capacity?: number;
+  description?: string;
+  isActive?: boolean;
 }
 
 export interface Pilot {

@@ -9,10 +9,13 @@ class Aircraft {
     pilotId, // FK para o piloto proprietário
     type, // asa delta, parapente, planador, trike, ultraleve asa fixa, paramotor, paratrike, ultraleve avançado
     prefix, // BR-XXXX até 10 caracteres
-    manufacturer,
-    model,
-    year,
+  manufacturer,
+  model,
+  year,
     serialNumber,
+    motor,
+    description,
+    operationStatus = true, // true = operando, false = inoperante
     photo = null,
     hangar = null,
     documents = [], // Array de documentos da aeronave
@@ -30,6 +33,9 @@ class Aircraft {
     this.model = model;
     this.year = year;
     this.serialNumber = serialNumber;
+    this.motor = motor;
+    this.description = description;
+    this.operationStatus = operationStatus;
     this.photo = photo;
     this.hangar = hangar;
     this.documents = documents;
@@ -38,10 +44,6 @@ class Aircraft {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
-
-  /**
-   * Tipos de aeronave válidos
-   */
   static getValidTypes() {
     return [
       'asa_delta',
@@ -81,6 +83,7 @@ class Aircraft {
       errors.push('Prefixo deve seguir o padrão BR-XXXX');
     }
 
+
     if (!this.manufacturer || this.manufacturer.trim().length < 2) {
       errors.push('Fabricante deve ter pelo menos 2 caracteres');
     }
@@ -89,10 +92,24 @@ class Aircraft {
       errors.push('Modelo deve ter pelo menos 2 caracteres');
     }
 
+    if (!this.motor || this.motor.trim().length < 2) {
+      errors.push('Motor é obrigatório e deve ter pelo menos 2 caracteres');
+    }
+
+    if (!this.description || this.description.trim().length < 5) {
+      errors.push('Descrição detalhada é obrigatória e deve ter pelo menos 5 caracteres');
+    }
+
+    if (typeof this.operationStatus !== 'boolean') {
+      errors.push('Status de operação deve ser booleano (sim/não)');
+    }
+
     if (this.year && (this.year < 1900 || this.year > new Date().getFullYear() + 1)) {
       errors.push('Ano inválido');
     }
 
+    // Validação opcional: garantir que o hangar pertence ao clubId
+    // (Necessário acesso ao repositório de hangares, depende da camada de serviço ou controller)
     return {
       isValid: errors.length === 0,
       errors
@@ -126,6 +143,9 @@ class Aircraft {
       model: this.model,
       year: this.year,
       serialNumber: this.serialNumber,
+      motor: this.motor,
+      description: this.description,
+      operationStatus: this.operationStatus,
       photo: this.photo,
       hangar: this.hangar,
       documents: this.documents,

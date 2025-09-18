@@ -7,6 +7,9 @@ class Pilot {
     id = null,
     clubId, // FK para o aeroclube (multi-tenancy)
     name,
+    cpf,
+    birthDate,
+    license,
     nickname,
     bloodType,
     address,
@@ -25,6 +28,9 @@ class Pilot {
     this.id = id;
     this.clubId = clubId;
     this.name = name;
+    this.cpf = cpf;
+    this.birthDate = birthDate;
+    this.license = license;
     this.nickname = nickname;
     this.bloodType = bloodType;
     this.address = address;
@@ -51,8 +57,21 @@ class Pilot {
       errors.push('ID do aeroclube é obrigatório');
     }
 
+
     if (!this.name || this.name.trim().length < 3) {
       errors.push('Nome deve ter pelo menos 3 caracteres');
+    }
+
+    if (!this.cpf || !/^\d{11}$/.test(this.cpf.replace(/\D/g, ''))) {
+      errors.push('CPF deve ter 11 dígitos numéricos');
+    }
+
+    if (!this.birthDate || isNaN(Date.parse(this.birthDate))) {
+      errors.push('Data de nascimento inválida ou ausente');
+    }
+
+    if (!this.license || !/^[A-Z0-9]+$/i.test(this.license)) {
+      errors.push('Licença é obrigatória e deve conter apenas letras e números');
     }
 
     if (this.bloodType && !['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].includes(this.bloodType)) {
@@ -91,6 +110,9 @@ class Pilot {
       id: this.id,
       clubId: this.clubId,
       name: this.name,
+      cpf: this.cpf,
+      birthDate: this.birthDate,
+      license: this.license,
       nickname: this.nickname,
       bloodType: this.bloodType,
       address: this.address,

@@ -3,9 +3,11 @@
  * Facilita a importação e uso dos modelos
  */
 
+
 const Club = require('./Club');
 const Pilot = require('./Pilot');
 const Aircraft = require('./Aircraft');
+const Hangar = require('./Hangar');
 const Document = require('./Document');
 const Flight = require('./Flight');
 const Maintenance = require('./Maintenance');
@@ -15,6 +17,7 @@ module.exports = {
   Club,
   Pilot,
   Aircraft,
+  Hangar,
   Document,
   Flight,
   Maintenance,

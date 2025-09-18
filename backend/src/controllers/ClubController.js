@@ -3,36 +3,36 @@
  * Implementa operações CRUD para multi-tenancy
  */
 
+// Armazenamento temporário em memória (será substituído pelo banco de dados)
+let clubsStorage = [
+  {
+    id: 1,
+    name: 'Aeroclube de São Paulo',
+    location: 'São Paulo, SP',
+    founded: '1950-01-15',
+    pilots_count: 45,
+    aircraft_count: 12,
+    status: 'active'
+  },
+  {
+    id: 2,
+    name: 'Aeroclube do Rio de Janeiro',
+    location: 'Rio de Janeiro, RJ',
+    founded: '1955-03-20',
+    pilots_count: 38,
+    aircraft_count: 8,
+    status: 'active'
+  }
+];
+
 class ClubController {
   // Listar todos os aeroclubes
   static async listClubs(req, res) {
     try {
-      // Mock data - Em produção virá do banco de dados
-      const clubs = [
-        {
-          id: 1,
-          name: 'Aeroclube de São Paulo',
-          location: 'São Paulo, SP',
-          founded: '1950-01-15',
-          pilots_count: 45,
-          aircraft_count: 12,
-          status: 'active'
-        },
-        {
-          id: 2,
-          name: 'Aeroclube do Rio de Janeiro',
-          location: 'Rio de Janeiro, RJ',
-          founded: '1955-03-20',
-          pilots_count: 38,
-          aircraft_count: 8,
-          status: 'active'
-        }
-      ];
-
       res.json({
         success: true,
-        data: clubs,
-        total: clubs.length,
+        data: clubsStorage,
+        total: clubsStorage.length,
         message: 'Aeroclubes listados com sucesso'
       });
     } catch (error) {
@@ -87,7 +87,7 @@ class ClubController {
   // Criar novo aeroclube
   static async createClub(req, res) {
     try {
-      const { name, location, contact } = req.body;
+      const { name, location, contact, cnpj } = req.body;
 
       // Validação básica
       if (!name || !location) {
@@ -97,11 +97,12 @@ class ClubController {
         });
       }
 
-      // Mock data - Em produção salvará no banco de dados
+      // Criar novo clube e adicionar ao armazenamento em memória
       const newClub = {
-        id: Date.now(), // ID temporário
+        id: Math.max(...clubsStorage.map(c => c.id), 0) + 1, // Próximo ID sequencial
         name,
         location,
+        cnpj: cnpj || '',
         contact: contact || {},
         founded: new Date().toISOString().split('T')[0],
         pilots_count: 0,
@@ -109,6 +110,9 @@ class ClubController {
         status: 'active',
         created_at: new Date().toISOString()
       };
+
+      // Adicionar ao armazenamento
+      clubsStorage.push(newClub);
 
       res.status(201).json({
         success: true,
