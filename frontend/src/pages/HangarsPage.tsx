@@ -21,8 +21,8 @@ const HangarsPage: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      api.get('/hangars'),
-      api.get('/clubs'),
+      api.get('/api/hangars'),
+      api.get('/api/clubs'),
     ])
       .then(([hangarsRes, clubsRes]) => {
         setHangars(hangarsRes.data.data);
@@ -47,7 +47,7 @@ const HangarsPage: React.FC = () => {
       return;
     }
     try {
-      const res = await api.post('/hangars', {
+  const res = await api.post('/api/hangars', {
         ...form,
         clubId: Number(form.clubId),
         capacity: Number(form.capacity),
@@ -61,67 +61,168 @@ const HangarsPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="flex-center loading-container"><div className="spinner" />Carregando hangares...</div>;
+    return (
+      <div className="flex-center loading-container">
+        <div className="spinner"></div>
+        <p className="loading-text">Carregando hangares...</p>
+      </div>
+    );
   }
   if (error) {
-    return <div className="error-container">{error}</div>;
+    return (
+      <div className="error-container">
+        <div className="card">
+          <h2 className="card-title text-danger">Erro</h2>
+          <p className="card-subtitle">{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Hangares</h1>
-      <button className="btn btn-primary mb-4" onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Cancelar' : 'Novo Hangar'}
-      </button>
-      {showForm && (
-        <form className="card p-4 mb-4" onSubmit={handleSubmit}>
-          <div className="mb-2">
-            <label className="block mb-1">Nome</label>
-            <input className="input" name="name" value={form.name} onChange={handleInputChange} required />
+    <div className="page-container">
+      <div className="content-container">
+        {/* Header */}
+        <div className="header-row" style={{ marginBottom: '2rem' }}>
+          <div>
+            <h1 className="card-title" style={{ fontSize: '1.875rem', margin: '0 0 0.5rem 0' }}>
+              🏠 Gerenciamento de Hangares
+            </h1>
+            <p className="card-subtitle" style={{ fontSize: '1rem', margin: 0 }}>
+              {hangars.length} hangar{hangars.length !== 1 ? 'es' : ''} cadastrado{hangars.length !== 1 ? 's' : ''}
+            </p>
           </div>
-          <div className="mb-2">
-            <label className="block mb-1">Aeroclube</label>
-            <select className="input" name="clubId" value={form.clubId} onChange={handleInputChange} required>
-              <option value="">Selecione</option>
-              {clubs.map((club) => (
-                <option key={club.id} value={club.id}>{club.name}</option>
-              ))}
-            </select>
+          <button
+            className={`btn ${showForm ? 'btn-secondary' : 'btn-primary'}`}
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancelar' : '+ Novo Hangar'}
+          </button>
+        </div>
+
+        {/* Formulário de cadastro */}
+        {showForm && (
+          <div className="card" style={{ maxWidth: 500, margin: '0 auto 2rem auto' }}>
+            <h2 className="card-title" style={{ marginBottom: '1rem' }}>Cadastrar Hangar</h2>
+            <form onSubmit={handleSubmit}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome</label>
+                <input
+                  className="input"
+                  name="name"
+                  value={form.name}
+                  onChange={handleInputChange}
+                  required
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Aeroclube</label>
+                <select
+                  className="input"
+                  name="clubId"
+                  value={form.clubId}
+                  onChange={handleInputChange}
+                  required
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                >
+                  <option value="">Selecione</option>
+                  {clubs && clubs.map((club) => (
+                    <option key={club.id} value={club.id}>{club.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Localização</label>
+                <input
+                  className="input"
+                  name="location"
+                  value={form.location}
+                  onChange={handleInputChange}
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Capacidade</label>
+                <input
+                  className="input"
+                  name="capacity"
+                  type="number"
+                  min={1}
+                  value={form.capacity}
+                  onChange={handleInputChange}
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Descrição</label>
+                <input
+                  className="input"
+                  name="description"
+                  value={form.description}
+                  onChange={handleInputChange}
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Status</label>
+                <select
+                  className="input"
+                  name="isActive"
+                  value={form.isActive ? 'true' : 'false'}
+                  onChange={e => setForm({ ...form, isActive: e.target.value === 'true' })}
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                >
+                  <option value="true">Ativo</option>
+                  <option value="false">Inativo</option>
+                </select>
+              </div>
+              {formError && <div className="text-danger" style={{ marginBottom: '1rem', textAlign: 'center' }}>{formError}</div>}
+              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-success">
+                  Salvar
+                </button>
+              </div>
+            </form>
           </div>
-          <div className="mb-2">
-            <label className="block mb-1">Localização</label>
-            <input className="input" name="location" value={form.location} onChange={handleInputChange} />
-          </div>
-          <div className="mb-2">
-            <label className="block mb-1">Capacidade</label>
-            <input className="input" name="capacity" type="number" min={1} value={form.capacity} onChange={handleInputChange} />
-          </div>
-          <div className="mb-2">
-            <label className="block mb-1">Descrição</label>
-            <input className="input" name="description" value={form.description} onChange={handleInputChange} />
-          </div>
-          <div className="mb-2">
-            <label className="block mb-1">Ativo?</label>
-            <select className="input" name="isActive" value={form.isActive ? 'true' : 'false'} onChange={e => setForm({ ...form, isActive: e.target.value === 'true' })}>
-              <option value="true">Sim</option>
-              <option value="false">Não</option>
-            </select>
-          </div>
-          {formError && <div className="text-red-500 mb-2">{formError}</div>}
-          <button className="btn btn-success" type="submit">Salvar</button>
-        </form>
-      )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {hangars.map((hangar) => (
-          <div key={hangar.id} className="card p-4">
-            <h2 className="font-bold text-lg mb-2">{hangar.name}</h2>
-            <div className="text-sm text-gray-600 mb-1">Aeroclube: {clubs.find(c => c.id === hangar.clubId)?.name || hangar.clubId}</div>
-            {hangar.location && <div className="text-sm mb-1">Localização: {hangar.location}</div>}
-            {typeof hangar.capacity !== 'undefined' && <div className="text-sm mb-1">Capacidade: {hangar.capacity}</div>}
-            {hangar.description && <div className="text-sm mb-1">{hangar.description}</div>}
-            <div className="text-xs text-gray-400 mt-2">ID: {hangar.id}</div>
-          </div>
-        ))}
+        )}
+
+        {/* Grid de hangares */}
+        <div className="clubs-grid">
+          {hangars.map((hangar) => (
+            <div key={hangar.id} className="card club-card">
+              <div className="club-header">
+                <div style={{ flex: 1 }}>
+                  <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0' }}>
+                    🏠 {hangar.name}
+                  </h3>
+                  <p className="card-subtitle">
+                    Aeroclube: {clubs && clubs.length > 0 ? (clubs.find(c => c.id === hangar.clubId)?.name || `ID: ${hangar.clubId}`) : 'Carregando...'}
+                  </p>
+                  {hangar.location && (
+                    <p className="card-subtitle">📍 {hangar.location}</p>
+                  )}
+                  {typeof hangar.capacity !== 'undefined' && (
+                    <p className="card-subtitle">✈️ Capacidade: {hangar.capacity} aeronaves</p>
+                  )}
+                  {hangar.description && (
+                    <p className="card-subtitle" style={{ marginTop: '0.5rem' }}>{hangar.description}</p>
+                  )}
+                </div>
+                <span className={`status-badge ${hangar.isActive ? '' : 'status-inactive'}`}>
+                  {hangar.isActive ? '✅ Ativo' : '❌ Inativo'}
+                </span>
+              </div>
+              <div className="club-actions">
+                <button className="btn btn-primary">👁️ Ver Detalhes</button>
+                <button className="btn btn-secondary">✏️ Editar</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

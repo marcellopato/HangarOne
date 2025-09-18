@@ -3,13 +3,48 @@ const router = express.Router();
 const Hangar = require('../models/Hangar');
 const Club = require('../models/Club');
 
+// Armazenamento temporário em memória (será substituído pelo banco de dados)
+let hangarsStorage = [
+  {
+    id: 1,
+    name: 'Hangar Alpha',
+    clubId: 1,
+    location: 'Pista Principal',
+    capacity: 8,
+    description: 'Hangar principal com capacidade para aeronaves de grande porte',
+    isActive: true
+  },
+  {
+    id: 2,
+    name: 'Hangar Beta',
+    clubId: 1,
+    location: 'Pista Secundária',
+    capacity: 4,
+    description: 'Hangar para aeronaves de pequeno porte',
+    isActive: true
+  },
+  {
+    id: 3,
+    name: 'Hangar Charlie',
+    clubId: 2,
+    location: 'Terminal Norte',
+    capacity: 6,
+    description: 'Hangar com sistema de manutenção integrado',
+    isActive: false
+  }
+];
+
 // Listar todos os hangares
 router.get('/', async (req, res) => {
   try {
-    // Aqui você pode adicionar filtros por clubId se desejar
-    // Exemplo: /api/hangars?clubId=1
     const { clubId } = req.query;
-    let hangars = req.app.locals.db ? await req.app.locals.db.Hangar.findAll({ where: clubId ? { clubId } : {} }) : [];
+    
+    // Filtrar por clubId se especificado
+    let hangars = hangarsStorage;
+    if (clubId) {
+      hangars = hangarsStorage.filter(h => h.clubId == clubId);
+    }
+    
     res.json({ success: true, data: hangars });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Erro ao buscar hangares', error: err.message });
@@ -23,9 +58,23 @@ router.post('/', async (req, res) => {
     if (!clubId || !name) {
       return res.status(400).json({ success: false, message: 'clubId e name são obrigatórios' });
     }
-    // Aqui você pode adicionar validações extras
-    let hangar = req.app.locals.db ? await req.app.locals.db.Hangar.create({ clubId, name, location, capacity, description, isActive }) : null;
-    res.status(201).json({ success: true, data: hangar });
+    
+    // Criar novo hangar e adicionar ao armazenamento
+    const newHangar = {
+      id: Math.max(...hangarsStorage.map(h => h.id), 0) + 1, // Próximo ID sequencial
+      clubId: parseInt(clubId),
+      name,
+      location: location || '',
+      capacity: parseInt(capacity) || 1,
+      description: description || '',
+      isActive: isActive !== undefined ? isActive : true,
+      created_at: new Date().toISOString()
+    };
+    
+    // Adicionar ao armazenamento
+    hangarsStorage.push(newHangar);
+    
+    res.status(201).json({ success: true, data: newHangar });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Erro ao criar hangar', error: err.message });
   }

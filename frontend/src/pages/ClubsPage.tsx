@@ -36,50 +36,20 @@ const ClubsPage: React.FC = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Dados mockados para exibição local
-  const [hangars, setHangars] = useState<Hangar[]>([]);
-  const [pilots, setPilots] = useState<Pilot[]>([]);
-  const [aircrafts, setAircrafts] = useState<Aircraft[]>([]);
+  // Dados reais da API
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      setClubs([
-        {
-          id: 1,
-          name: 'Aeroclube de São Paulo',
-          location: 'São Paulo, SP',
-          founded: '1950-01-15',
-          pilots_count: 2,
-          aircraft_count: 2,
-          status: 'active',
-        },
-        {
-          id: 2,
-          name: 'Aeroclube do Rio de Janeiro',
-          location: 'Rio de Janeiro, RJ',
-          founded: '1955-03-20',
-          pilots_count: 1,
-          aircraft_count: 1,
-          status: 'active',
-        },
-      ]);
-      setHangars([
-        { id: 1, name: 'Hangar Central', clubId: 1 },
-        { id: 2, name: 'Hangar Norte', clubId: 1 },
-        { id: 3, name: 'Hangar Principal', clubId: 2 },
-      ]);
-      setPilots([
-        { id: 1, name: 'João Silva', cpf: '123.456.789-00', address: 'Rua A, 100', nickname: 'J. Silva', birthDate: '1980-05-10', license: 'PP-12345', clubId: 1 },
-        { id: 2, name: 'Maria Souza', cpf: '987.654.321-00', address: 'Av. B, 200', nickname: 'Mary', birthDate: '1990-08-22', license: 'PC-54321', clubId: 1 },
-        { id: 3, name: 'Carlos Lima', cpf: '111.222.333-44', address: 'Rua C, 300', nickname: 'Carlão', birthDate: '1975-12-01', license: 'PP-67890', clubId: 2 },
-      ]);
-      setAircrafts([
-        { id: 1, prefix: 'PT-ABC', description: 'Cessna 172', type: 'Monomotor', engine: 'Lycoming', year: 2005, status: 'operational', clubId: 1, hangarId: 1, ownerPilotIds: [1] },
-        { id: 2, prefix: 'PT-XYZ', description: 'Piper PA-28', type: 'Monomotor', engine: 'Lycoming', year: 2010, status: 'operational', clubId: 1, hangarId: 2, ownerPilotIds: [2] },
-        { id: 3, prefix: 'PT-RIO', description: 'Cessna 150', type: 'Monomotor', engine: 'Continental', year: 1998, status: 'inoperational', clubId: 2, hangarId: 3, ownerPilotIds: [3] },
-      ]);
-      setLoading(false);
-    }, 500);
+    import('../services/api').then(({ default: api }) => {
+      api.get('/api/clubs')
+        .then((res) => {
+          setClubs(res.data.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError('Erro ao carregar aeroclubes.');
+          setLoading(false);
+        });
+    });
   }, []);
 
   const handleRetry = () => {
@@ -88,41 +58,25 @@ const ClubsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex-center loading-container">
-        <div className="spinner" />
-        <p className="text-gray loading-text">Carregando aeroclubes...</p>
+      <div className="page-container">
+        <div className="content-container">
+          <div className="header-row">
+            <h1 className="card-title">Carregando aeroclubes...</h1>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex-center error-container">
-        <div className="card" style={{ maxWidth: 400 }}>
-          <h2 className="card-title" style={{ color: '#c33', marginBottom: 10 }}>Erro</h2>
-          <p className="card-subtitle" style={{ marginBottom: 20 }}>{error}</p>
-          <button className="btn btn-primary" onClick={handleRetry}>
-            Tentar Novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (clubs.length === 0) {
-    return (
-      <div className="empty-list-container">
-        <div className="card" style={{ padding: '3rem 2rem', maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏢</div>
-          <h2 className="card-title" style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>
-            Nenhum aeroclube encontrado
-          </h2>
-          <p className="card-subtitle" style={{ marginBottom: '2rem' }}>
-            Ainda não há aeroclubes cadastrados no sistema.
-          </p>
-          <button className="btn btn-primary" onClick={() => console.log('Criar novo aeroclube')}>
-            + Cadastrar Primeiro Aeroclube
-          </button>
+      <div className="page-container">
+        <div className="content-container">
+          <div className="header-row">
+            <h1 className="card-title" style={{ color: '#c33' }}>Erro</h1>
+            <p>{error}</p>
+            <button className="btn btn-primary" onClick={handleRetry}>Tentar Novamente</button>
+          </div>
         </div>
       </div>
     );
@@ -132,227 +86,173 @@ const ClubsPage: React.FC = () => {
     <div className="page-container">
       <div className="content-container">
         {/* Header */}
-        <div className="header-row">
+        <div className="header-row" style={{ marginBottom: '2rem' }}>
           <div>
             <h1 className="card-title" style={{ fontSize: '1.875rem', margin: '0 0 0.5rem 0' }}>
               🏢 Gerenciamento de Aeroclubes
             </h1>
-            <p className="card-subtitle" style={{ fontSize: '1rem', margin: 0 }}>
+            <p className="card-subtitle" style={{ fontSize: '1rem', margin: '0 0 0.5rem 0' }}>
               {clubs.length} aeroclube{clubs.length !== 1 ? 's' : ''} cadastrado{clubs.length !== 1 ? 's' : ''}
             </p>
+            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.875rem', color: '#64748b' }}>
+              <span>👨‍✈️ {clubs.reduce((acc, club) => acc + club.pilots_count, 0)} pilotos</span>
+              <span>✈️ {clubs.reduce((acc, club) => acc + club.aircraft_count, 0)} aeronaves</span>
+              <span>✅ {clubs.filter(club => club.status === 'active').length} ativos</span>
+            </div>
           </div>
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-            <span>+</span> Novo Aeroclube
+          <button 
+            className={`btn ${showForm ? 'btn-secondary' : 'btn-primary'}`}
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancelar' : '+ Novo Aeroclube'}
           </button>
         </div>
 
         {/* Formulário de cadastro */}
         {showForm && (
-          <div className="card cadastro-card" style={{ maxWidth: 480, margin: '2.5rem auto', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', border: '1.5px solid #e2e8f0', padding: '2.2rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <h2 className="card-title" style={{ fontSize: '1.35rem', marginBottom: 18, color: '#1e293b', textAlign: 'center', fontWeight: 700 }}>Cadastrar Aeroclube</h2>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                setFormError(null);
-                if (!form.name.trim()) {
-                  setFormError('O nome do aeroclube é obrigatório.');
-                  return;
-                }
-                // Salvar logotipo no localStorage
-                let logoUrl = '';
-                if (form.logo) {
-                  logoUrl = form.logo;
-                  localStorage.setItem(`club_logo_${form.name}`, logoUrl);
-                }
-                // Adicionar novo clube
-                setClubs(prev => [
-                  ...prev,
-                  {
-                    id: Date.now(),
-                    name: form.name,
-                    cnpj: form.cnpj,
-                    location: form.location,
-                    founded: new Date().toISOString().split('T')[0],
-                    pilots_count: 0,
-                    aircraft_count: 0,
-                    status: 'active',
-                    logoUrl,
-                  },
-                ]);
-                setShowForm(false);
-                setForm({ name: '', cnpj: '', location: '', logo: '' });
-                setLogoPreview(null);
-              }}
-              style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 18 }}
-            >
-              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
-                Nome*<br />
+          <div className="card" style={{ maxWidth: 500, margin: '0 auto 2rem auto' }}>
+            <h2 className="card-title" style={{ marginBottom: '1rem' }}>🏢 Cadastrar Aeroclube</h2>
+            
+            <form style={{ width: '100%' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome do Aeroclube</label>
                 <input
                   type="text"
-                  className="card-input"
-                  style={{ marginTop: 2, marginBottom: 8 }}
+                  className="input"
                   value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="Ex: Aeroclube de São Paulo"
                   required
-                  placeholder="Nome do aeroclube"
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
-              </label>
-              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
-                CNPJ (opcional)
-                <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-                  <input
-                    type="text"
-                    className="card-input"
-                    value={form.cnpj}
-                    onChange={e => setForm(f => ({ ...f, cnpj: e.target.value }))}
-                    placeholder="00.000.000/0000-00"
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    style={{ minWidth: 90 }}
-                    disabled={cnpjLoading || !form.cnpj.trim()}
-                    onClick={async () => {
-                      setFormError(null);
-                      setCnpjLoading(true);
-                      // Simulação de busca ReceitaWS
-                      await new Promise(r => setTimeout(r, 900));
-                      // Mock: CNPJ válido = '12.345.678/0001-99'
-                      if (form.cnpj.replace(/\D/g, '') === '12345678000199') {
-                        setForm(f => ({
-                          ...f,
-                          name: 'Aeroclube Exemplo',
-                          location: 'São Paulo, SP',
-                        }));
-                        setFormError(null);
-                      } else {
-                        setFormError('CNPJ não encontrado na ReceitaWS (mock).');
-                      }
-                      setCnpjLoading(false);
-                    }}
-                  >
-                    {cnpjLoading ? 'Buscando...' : 'Buscar CNPJ'}
-                  </button>
-                </div>
-              </label>
-              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
-                Localização<br />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>CNPJ</label>
                 <input
                   type="text"
-                  className="card-input"
-                  style={{ marginTop: 2, marginBottom: 8 }}
-                  value={form.location}
-                  onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
-                  placeholder="Cidade, UF"
+                  className="input"
+                  value={form.cnpj}
+                  onChange={(e) => setForm({ ...form, cnpj: e.target.value })}
+                  placeholder="XX.XXX.XXX/XXXX-XX"
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
-              </label>
-              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
-                Logotipo (opcional)<br />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Localização</label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  style={{ marginTop: 2 }}
-                  onChange={e => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onload = ev => {
-                        setForm(f => ({ ...f, logo: ev.target?.result as string }));
-                        setLogoPreview(ev.target?.result as string);
-                      };
-                      reader.readAsDataURL(file);
+                  type="text"
+                  className="input"
+                  value={form.location}
+                  onChange={(e) => setForm({ ...form, location: e.target.value })}
+                  placeholder="Ex: São Paulo, SP"
+                  required
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
+                />
+              </div>
+
+              {formError && (
+                <div className="text-danger" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                  {formError}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn btn-success"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setFormError(null);
+                    
+                    if (!form.name || !form.location) {
+                      setFormError('Nome e localização são obrigatórios');
+                      return;
+                    }
+
+                    try {
+                      const api = (await import('../services/api')).default;
+                      const response = await api.post('/api/clubs', {
+                        name: form.name,
+                        location: form.location,
+                        cnpj: form.cnpj
+                      });
+
+                      if (response.data.success) {
+                        // Adicionar o novo clube à lista
+                        setClubs([...clubs, response.data.data]);
+                        // Limpar formulário
+                        setForm({ name: '', cnpj: '', location: '', logo: '' });
+                        setShowForm(false);
+                      } else {
+                        setFormError('Erro ao cadastrar aeroclube');
+                      }
+                    } catch (error: any) {
+                      setFormError(error.response?.data?.message || 'Erro ao cadastrar aeroclube');
                     }
                   }}
-                />
-                {logoPreview && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                    <img src={logoPreview} alt="Prévia do logotipo" style={{ maxWidth: 120, borderRadius: 8 }} />
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      style={{ padding: '2px 8px', fontSize: 13 }}
-                      onClick={() => { setForm(f => ({ ...f, logo: '' })); setLogoPreview(null); }}
-                    >Remover</button>
-                  </div>
-                )}
-              </label>
-              {formError && <div style={{ color: '#dc2626', fontSize: 14, marginTop: 2 }}>{formError}</div>}
-              <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center' }}>
-                <button type="submit" className="btn btn-primary">Salvar</button>
-                <button type="button" className="btn btn-secondary" onClick={() => { setShowForm(false); setFormError(null); }}>Cancelar</button>
+                >
+                  Cadastrar
+                </button>
               </div>
             </form>
           </div>
         )}
 
-        {/* Cards Grid */}
+        {/* Lista de clubes */}
         <div className="clubs-grid">
-          {clubs.map((club) => {
-            const clubHangars = hangars.filter(h => h.clubId === club.id);
-            const clubPilots = pilots.filter(p => p.clubId === club.id);
-            const clubAircrafts = aircrafts.filter(a => a.clubId === club.id);
-            return (
-              <div key={club.id} className="card club-card">
-                {/* Club Header */}
-                <div className="club-header">
-                  <div style={{ flex: 1 }}>
-                    <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.25rem 0' }}>{club.name}</h3>
-                    <p className="card-subtitle" style={{ fontSize: '0.9rem', margin: 0 }}>📍 {club.location}</p>
-                    {club.cnpj && <p className="card-subtitle" style={{ fontSize: '0.85rem', margin: 0 }}>CNPJ: {club.cnpj}</p>}
-                    {club.logoUrl && <img src={club.logoUrl} alt="Logo" style={{ maxWidth: 60, marginTop: 4, borderRadius: 6 }} />}
-                  </div>
-                  <span className={club.status === 'active' ? 'status-badge status-active' : 'status-badge status-inactive'}>
-                    {club.status === 'active' ? '✅ Ativo' : '❌ Inativo'}
-                  </span>
+          {clubs.map((club) => (
+            <div key={club.id} className="card club-card">
+              <div className="club-header">
+                <div style={{ flex: 1 }}>
+                  <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0' }}>
+                    🏢 {club.name}
+                  </h3>
+                  <p className="card-subtitle">
+                    📍 {club.location}
+                  </p>
+                  <p className="card-subtitle">
+                    📅 Fundado em {new Date(club.founded).getFullYear()}
+                  </p>
+                  {club.cnpj && (
+                    <p className="card-subtitle">
+                      🏛️ CNPJ: {club.cnpj}
+                    </p>
+                  )}
                 </div>
-                {/* Hangares */}
-                <div style={{ marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, color: '#64748b' }}>
-                    🏠 {clubHangars.length} hangar{clubHangars.length !== 1 ? 'es' : ''}
-                    {clubHangars.length > 0 && (
-                      <span>: {clubHangars.map(h => h.name).join(', ')}</span>
-                    )}
-                  </span>
+                <span className={`status-badge ${club.status === 'active' ? '' : 'status-inactive'}`}>
+                  {club.status === 'active' ? '✅ Ativo' : '❌ Inativo'}
+                </span>
+              </div>
+              
+              {/* Estatísticas do clube */}
+              <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', margin: '1rem 0' }}>
+                <div className="stat-item" style={{ textAlign: 'center', padding: '0.5rem', backgroundColor: '#f8fafc', borderRadius: '4px' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>👨‍✈️</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#2563eb' }}>{club.pilots_count}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Pilotos</div>
                 </div>
-                {/* Pilotos */}
-                <div style={{ marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, color: '#64748b' }}>
-                    👨‍✈️ {clubPilots.length} piloto{clubPilots.length !== 1 ? 's' : ''}
-                    {clubPilots.length > 0 && (
-                      <span>: {clubPilots.map(p => p.name).join(', ')}</span>
-                    )}
-                  </span>
-                </div>
-                {/* Aeronaves */}
-                <div style={{ marginBottom: 10 }}>
-                  <span style={{ fontSize: 13, color: '#64748b' }}>
-                    ✈️ {clubAircrafts.length} aeronave{clubAircrafts.length !== 1 ? 's' : ''}
-                    {clubAircrafts.length > 0 && (
-                      <span>: {clubAircrafts.map(a => a.prefix).join(', ')}</span>
-                    )}
-                  </span>
-                </div>
-                {/* Stats */}
-                <div className="club-stats">
-                  <div className="club-stat">
-                    <div className="stat-value stat-pilots">{clubPilots.length}</div>
-                    <div className="stat-label">👨‍✈️ Pilotos</div>
-                  </div>
-                  <div className="club-stat">
-                    <div className="stat-value stat-aircraft">{clubAircrafts.length}</div>
-                    <div className="stat-label">✈️ Aeronaves</div>
-                  </div>
-                </div>
-                {/* Founded Date */}
-                <div className="club-founded">📅 Fundado em {new Date(club.founded).toLocaleDateString('pt-BR')}</div>
-                {/* Actions */}
-                <div className="club-actions">
-                  <button className="btn btn-primary">👁️ Ver Detalhes</button>
-                  <button className="btn btn-secondary">✏️ Editar</button>
+                <div className="stat-item" style={{ textAlign: 'center', padding: '0.5rem', backgroundColor: '#f8fafc', borderRadius: '4px' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>✈️</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#059669' }}>{club.aircraft_count}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Aeronaves</div>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="club-actions">
+                <button className="btn btn-primary">👁️ Ver Detalhes</button>
+                <button className="btn btn-secondary">✏️ Editar</button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
