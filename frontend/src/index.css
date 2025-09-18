@@ -116,10 +116,20 @@ code {
   background: white;
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  overflow-x: auto;
+  width: 100%;
 }
 .nav-row {
   display: flex;
+  flex-wrap: nowrap;
   overflow-x: auto;
+  width: 100%;
+  justify-content: center;
+}
+/* Ajuste para container dentro do menu não limitar largura do menu */
+.main-nav .container {
+  max-width: none;
+  padding: 0;
 }
 .nav-link {
   display: flex;
