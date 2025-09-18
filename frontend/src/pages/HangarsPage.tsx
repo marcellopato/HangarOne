@@ -62,38 +62,51 @@ const HangarsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex-center loading-container">
-        <div className="spinner"></div>
-        <p className="loading-text">Carregando hangares...</p>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-xl font-semibold text-gray-900">Carregando hangares...</p>
+          </div>
+        </div>
       </div>
     );
   }
   if (error) {
     return (
-      <div className="error-container">
-        <div className="card">
-          <h2 className="card-title text-danger">Erro</h2>
-          <p className="card-subtitle">{error}</p>
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-red-800 mb-2">Erro</h2>
+          <p className="text-red-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Tentar Novamente
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page-container">
-      <div className="content-container">
+    <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="header-row" style={{ marginBottom: '2rem' }}>
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="card-title" style={{ fontSize: '1.875rem', margin: '0 0 0.5rem 0' }}>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               🏠 Gerenciamento de Hangares
             </h1>
-            <p className="card-subtitle" style={{ fontSize: '1rem', margin: 0 }}>
+            <p className="text-gray-600">
               {hangars.length} hangar{hangars.length !== 1 ? 'es' : ''} cadastrado{hangars.length !== 1 ? 's' : ''}
             </p>
           </div>
           <button
-            className={`btn ${showForm ? 'btn-secondary' : 'btn-primary'}`}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              showForm 
+                ? 'bg-gray-600 text-white hover:bg-gray-700' 
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
             onClick={() => setShowForm(!showForm)}
           >
             {showForm ? 'Cancelar' : '+ Novo Hangar'}
@@ -102,29 +115,27 @@ const HangarsPage: React.FC = () => {
 
         {/* Formulário de cadastro */}
         {showForm && (
-          <div className="card" style={{ maxWidth: 500, margin: '0 auto 2rem auto' }}>
-            <h2 className="card-title" style={{ marginBottom: '1rem' }}>Cadastrar Hangar</h2>
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome</label>
+          <div className="bg-white rounded-lg shadow-md p-6 max-w-lg mx-auto mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Cadastrar Hangar</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nome</label>
                 <input
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="name"
                   value={form.name}
                   onChange={handleInputChange}
                   required
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
               </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Aeroclube</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Aeroclube</label>
                 <select
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="clubId"
                   value={form.clubId}
                   onChange={handleInputChange}
                   required
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 >
                   <option value="">Selecione</option>
                   {clubs && clubs.map((club) => (
@@ -132,57 +143,60 @@ const HangarsPage: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Localização</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Localização</label>
                 <input
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="location"
                   value={form.location}
                   onChange={handleInputChange}
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
               </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Capacidade</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Capacidade</label>
                 <input
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="capacity"
                   type="number"
                   min={1}
                   value={form.capacity}
                   onChange={handleInputChange}
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
               </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Descrição</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
                 <input
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="description"
                   value={form.description}
                   onChange={handleInputChange}
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 />
               </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Status</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select
-                  className="input"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="isActive"
                   value={form.isActive ? 'true' : 'false'}
                   onChange={e => setForm({ ...form, isActive: e.target.value === 'true' })}
-                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #dee2e6', borderRadius: '4px' }}
                 >
                   <option value="true">Ativo</option>
                   <option value="false">Inativo</option>
                 </select>
               </div>
-              {formError && <div className="text-danger" style={{ marginBottom: '1rem', textAlign: 'center' }}>{formError}</div>}
-              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+              {formError && <div className="text-red-600 text-center">{formError}</div>}
+              <div className="flex gap-2 justify-end pt-4">
+                <button 
+                  type="button" 
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors" 
+                  onClick={() => setShowForm(false)}
+                >
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-success">
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
                   Salvar
                 </button>
               </div>
@@ -191,39 +205,46 @@ const HangarsPage: React.FC = () => {
         )}
 
         {/* Grid de hangares */}
-        <div className="clubs-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hangars.map((hangar) => (
-            <div key={hangar.id} className="card club-card">
-              <div className="club-header">
-                <div style={{ flex: 1 }}>
-                  <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0' }}>
+            <div key={hangar.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
                     🏠 {hangar.name}
                   </h3>
-                  <p className="card-subtitle">
+                  <p className="text-gray-600 text-sm mb-1">
                     Aeroclube: {clubs && clubs.length > 0 ? (clubs.find(c => c.id === hangar.clubId)?.name || `ID: ${hangar.clubId}`) : 'Carregando...'}
                   </p>
                   {hangar.location && (
-                    <p className="card-subtitle">📍 {hangar.location}</p>
+                    <p className="text-gray-600 text-sm mb-1">📍 {hangar.location}</p>
                   )}
                   {typeof hangar.capacity !== 'undefined' && (
-                    <p className="card-subtitle">✈️ Capacidade: {hangar.capacity} aeronaves</p>
+                    <p className="text-gray-600 text-sm mb-1">✈️ Capacidade: {hangar.capacity} aeronaves</p>
                   )}
                   {hangar.description && (
-                    <p className="card-subtitle" style={{ marginTop: '0.5rem' }}>{hangar.description}</p>
+                    <p className="text-gray-600 text-sm mt-2">{hangar.description}</p>
                   )}
                 </div>
-                <span className={`status-badge ${hangar.isActive ? '' : 'status-inactive'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  hangar.isActive 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
                   {hangar.isActive ? '✅ Ativo' : '❌ Inativo'}
                 </span>
               </div>
-              <div className="club-actions">
-                <button className="btn btn-primary">👁️ Ver Detalhes</button>
-                <button className="btn btn-secondary">✏️ Editar</button>
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                  👁️ Ver Detalhes
+                </button>
+                <button className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
+                  ✏️ Editar
+                </button>
               </div>
             </div>
           ))}
         </div>
-      </div>
     </div>
   );
 };
