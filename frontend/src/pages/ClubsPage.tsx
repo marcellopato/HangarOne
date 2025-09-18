@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Hangar, Pilot, Aircraft } from '../types/aviation';
 
 
 interface Club {
@@ -36,6 +37,9 @@ const ClubsPage: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
 
   // Dados mockados para exibição local
+  const [hangars, setHangars] = useState<Hangar[]>([]);
+  const [pilots, setPilots] = useState<Pilot[]>([]);
+  const [aircrafts, setAircrafts] = useState<Aircraft[]>([]);
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -45,8 +49,8 @@ const ClubsPage: React.FC = () => {
           name: 'Aeroclube de São Paulo',
           location: 'São Paulo, SP',
           founded: '1950-01-15',
-          pilots_count: 45,
-          aircraft_count: 12,
+          pilots_count: 2,
+          aircraft_count: 2,
           status: 'active',
         },
         {
@@ -54,10 +58,25 @@ const ClubsPage: React.FC = () => {
           name: 'Aeroclube do Rio de Janeiro',
           location: 'Rio de Janeiro, RJ',
           founded: '1955-03-20',
-          pilots_count: 38,
-          aircraft_count: 8,
+          pilots_count: 1,
+          aircraft_count: 1,
           status: 'active',
         },
+      ]);
+      setHangars([
+        { id: 1, name: 'Hangar Central', clubId: 1 },
+        { id: 2, name: 'Hangar Norte', clubId: 1 },
+        { id: 3, name: 'Hangar Principal', clubId: 2 },
+      ]);
+      setPilots([
+        { id: 1, name: 'João Silva', cpf: '123.456.789-00', address: 'Rua A, 100', nickname: 'J. Silva', birthDate: '1980-05-10', license: 'PP-12345', clubId: 1 },
+        { id: 2, name: 'Maria Souza', cpf: '987.654.321-00', address: 'Av. B, 200', nickname: 'Mary', birthDate: '1990-08-22', license: 'PC-54321', clubId: 1 },
+        { id: 3, name: 'Carlos Lima', cpf: '111.222.333-44', address: 'Rua C, 300', nickname: 'Carlão', birthDate: '1975-12-01', license: 'PP-67890', clubId: 2 },
+      ]);
+      setAircrafts([
+        { id: 1, prefix: 'PT-ABC', description: 'Cessna 172', type: 'Monomotor', engine: 'Lycoming', year: 2005, status: 'operational', clubId: 1, hangarId: 1, ownerPilotIds: [1] },
+        { id: 2, prefix: 'PT-XYZ', description: 'Piper PA-28', type: 'Monomotor', engine: 'Lycoming', year: 2010, status: 'operational', clubId: 1, hangarId: 2, ownerPilotIds: [2] },
+        { id: 3, prefix: 'PT-RIO', description: 'Cessna 150', type: 'Monomotor', engine: 'Continental', year: 1998, status: 'inoperational', clubId: 2, hangarId: 3, ownerPilotIds: [3] },
       ]);
       setLoading(false);
     }, 500);
@@ -268,40 +287,72 @@ const ClubsPage: React.FC = () => {
 
         {/* Cards Grid */}
         <div className="clubs-grid">
-          {clubs.map((club) => (
-            <div key={club.id} className="card club-card">
-              {/* Club Header */}
-              <div className="club-header">
-                <div style={{ flex: 1 }}>
-                  <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.25rem 0' }}>{club.name}</h3>
-                  <p className="card-subtitle" style={{ fontSize: '0.9rem', margin: 0 }}>📍 {club.location}</p>
-                  {club.cnpj && <p className="card-subtitle" style={{ fontSize: '0.85rem', margin: 0 }}>CNPJ: {club.cnpj}</p>}
-                  {club.logoUrl && <img src={club.logoUrl} alt="Logo" style={{ maxWidth: 60, marginTop: 4, borderRadius: 6 }} />}
+          {clubs.map((club) => {
+            const clubHangars = hangars.filter(h => h.clubId === club.id);
+            const clubPilots = pilots.filter(p => p.clubId === club.id);
+            const clubAircrafts = aircrafts.filter(a => a.clubId === club.id);
+            return (
+              <div key={club.id} className="card club-card">
+                {/* Club Header */}
+                <div className="club-header">
+                  <div style={{ flex: 1 }}>
+                    <h3 className="card-title" style={{ fontSize: '1.25rem', margin: '0 0 0.25rem 0' }}>{club.name}</h3>
+                    <p className="card-subtitle" style={{ fontSize: '0.9rem', margin: 0 }}>📍 {club.location}</p>
+                    {club.cnpj && <p className="card-subtitle" style={{ fontSize: '0.85rem', margin: 0 }}>CNPJ: {club.cnpj}</p>}
+                    {club.logoUrl && <img src={club.logoUrl} alt="Logo" style={{ maxWidth: 60, marginTop: 4, borderRadius: 6 }} />}
+                  </div>
+                  <span className={club.status === 'active' ? 'status-badge status-active' : 'status-badge status-inactive'}>
+                    {club.status === 'active' ? '✅ Ativo' : '❌ Inativo'}
+                  </span>
                 </div>
-                <span className={club.status === 'active' ? 'status-badge status-active' : 'status-badge status-inactive'}>
-                  {club.status === 'active' ? '✅ Ativo' : '❌ Inativo'}
-                </span>
-              </div>
-              {/* Stats */}
-              <div className="club-stats">
-                <div className="club-stat">
-                  <div className="stat-value stat-pilots">{club.pilots_count}</div>
-                  <div className="stat-label">👨‍✈️ Pilotos</div>
+                {/* Hangares */}
+                <div style={{ marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>
+                    🏠 {clubHangars.length} hangar{clubHangars.length !== 1 ? 'es' : ''}
+                    {clubHangars.length > 0 && (
+                      <span>: {clubHangars.map(h => h.name).join(', ')}</span>
+                    )}
+                  </span>
                 </div>
-                <div className="club-stat">
-                  <div className="stat-value stat-aircraft">{club.aircraft_count}</div>
-                  <div className="stat-label">✈️ Aeronaves</div>
+                {/* Pilotos */}
+                <div style={{ marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>
+                    👨‍✈️ {clubPilots.length} piloto{clubPilots.length !== 1 ? 's' : ''}
+                    {clubPilots.length > 0 && (
+                      <span>: {clubPilots.map(p => p.name).join(', ')}</span>
+                    )}
+                  </span>
+                </div>
+                {/* Aeronaves */}
+                <div style={{ marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>
+                    ✈️ {clubAircrafts.length} aeronave{clubAircrafts.length !== 1 ? 's' : ''}
+                    {clubAircrafts.length > 0 && (
+                      <span>: {clubAircrafts.map(a => a.prefix).join(', ')}</span>
+                    )}
+                  </span>
+                </div>
+                {/* Stats */}
+                <div className="club-stats">
+                  <div className="club-stat">
+                    <div className="stat-value stat-pilots">{clubPilots.length}</div>
+                    <div className="stat-label">👨‍✈️ Pilotos</div>
+                  </div>
+                  <div className="club-stat">
+                    <div className="stat-value stat-aircraft">{clubAircrafts.length}</div>
+                    <div className="stat-label">✈️ Aeronaves</div>
+                  </div>
+                </div>
+                {/* Founded Date */}
+                <div className="club-founded">📅 Fundado em {new Date(club.founded).toLocaleDateString('pt-BR')}</div>
+                {/* Actions */}
+                <div className="club-actions">
+                  <button className="btn btn-primary">👁️ Ver Detalhes</button>
+                  <button className="btn btn-secondary">✏️ Editar</button>
                 </div>
               </div>
-              {/* Founded Date */}
-              <div className="club-founded">📅 Fundado em {new Date(club.founded).toLocaleDateString('pt-BR')}</div>
-              {/* Actions */}
-              <div className="club-actions">
-                <button className="btn btn-primary">👁️ Ver Detalhes</button>
-                <button className="btn btn-secondary">✏️ Editar</button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
