@@ -129,8 +129,8 @@ const ClubsPage: React.FC = () => {
 
         {/* Formulário de cadastro */}
         {showForm && (
-          <div className="card" style={{ maxWidth: 500, margin: '2rem auto' }}>
-            <h2 className="card-title" style={{ fontSize: '1.3rem' }}>Cadastrar Aeroclube</h2>
+          <div className="card cadastro-card" style={{ maxWidth: 480, margin: '2.5rem auto', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', border: '1.5px solid #e2e8f0', padding: '2.2rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 className="card-title" style={{ fontSize: '1.35rem', marginBottom: 18, color: '#1e293b', textAlign: 'center', fontWeight: 700 }}>Cadastrar Aeroclube</h2>
             <form
               onSubmit={e => {
                 e.preventDefault();
@@ -164,22 +164,23 @@ const ClubsPage: React.FC = () => {
                 setForm({ name: '', cnpj: '', location: '', logo: '' });
                 setLogoPreview(null);
               }}
-              style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+              style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 18 }}
             >
-              <label>
+              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
                 Nome*<br />
                 <input
                   type="text"
                   className="card-input"
+                  style={{ marginTop: 2, marginBottom: 8 }}
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   required
                   placeholder="Nome do aeroclube"
                 />
               </label>
-              <label>
+              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
                 CNPJ (opcional)
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
                   <input
                     type="text"
                     className="card-input"
@@ -215,21 +216,23 @@ const ClubsPage: React.FC = () => {
                   </button>
                 </div>
               </label>
-              <label>
+              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
                 Localização<br />
                 <input
                   type="text"
                   className="card-input"
+                  style={{ marginTop: 2, marginBottom: 8 }}
                   value={form.location}
                   onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                   placeholder="Cidade, UF"
                 />
               </label>
-              <label>
+              <label style={{ fontWeight: 500, color: '#374151', marginBottom: 2 }}>
                 Logotipo (opcional)<br />
                 <input
                   type="file"
                   accept="image/*"
+                  style={{ marginTop: 2 }}
                   onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -243,11 +246,19 @@ const ClubsPage: React.FC = () => {
                   }}
                 />
                 {logoPreview && (
-                  <img src={logoPreview} alt="Prévia do logotipo" style={{ maxWidth: 120, marginTop: 8, borderRadius: 8 }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                    <img src={logoPreview} alt="Prévia do logotipo" style={{ maxWidth: 120, borderRadius: 8 }} />
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ padding: '2px 8px', fontSize: 13 }}
+                      onClick={() => { setForm(f => ({ ...f, logo: '' })); setLogoPreview(null); }}
+                    >Remover</button>
+                  </div>
                 )}
               </label>
-              {formError && <div style={{ color: '#dc2626', fontSize: 14 }}>{formError}</div>}
-              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              {formError && <div style={{ color: '#dc2626', fontSize: 14, marginTop: 2 }}>{formError}</div>}
+              <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center' }}>
                 <button type="submit" className="btn btn-primary">Salvar</button>
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowForm(false); setFormError(null); }}>Cancelar</button>
               </div>
