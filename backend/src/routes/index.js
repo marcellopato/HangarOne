@@ -9,6 +9,7 @@ const authRoutes = require('./auth');
 const usersRoutes = require('./users');
 const clubsRoutes = require('./clubs');
 const hangarsRoutes = require('./hangars');
+const pilotsRoutes = require('./pilots');
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ router.use('/users', usersRoutes);
 router.use('/clubs', clubsRoutes);
 // Rotas dos hangares
 router.use('/hangars', hangarsRoutes);
+// Rotas dos pilotos
+router.use('/pilots', pilotsRoutes);
 
 // Rota de teste da API
 router.get('/test', (req, res) => {
