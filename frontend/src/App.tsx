@@ -17,53 +17,30 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+    <div className="main-bg">
       {/* Header */}
-      <header style={{
-        background: 'linear-gradient(135deg, #0066cc 0%, #004d99 100%)',
-        color: 'white',
-        padding: '1rem 0',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0 }}>
-                ✈️ HangarOne
-              </h1>
+      <header className="main-header">
+        <div className="container">
+          <div className="header-row">
+            <Link to="/" className="brand-link">
+              <h1 className="brand-title">✈️ HangarOne</h1>
             </Link>
-            <div style={{ fontSize: '0.9rem', opacity: '0.9' }}>
-              Sistema de Gestão de Aeroclubes
-            </div>
+            <div className="header-desc">Sistema de Gestão de Aeroclubes</div>
           </div>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e2e8f0',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', overflowX: 'auto' }}>
+      <nav className="main-nav">
+        <div className="container">
+          <div className="nav-row">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '1rem 1.5rem',
-                  textDecoration: 'none',
-                  color: location.pathname === item.path ? '#0066cc' : '#64748b',
-                  borderBottom: location.pathname === item.path ? '2px solid #0066cc' : '2px solid transparent',
-                  fontWeight: location.pathname === item.path ? '600' : '400',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.2s ease'
-                }}
+                className={`nav-link${location.pathname === item.path ? ' nav-link-active' : ''}`}
               >
-                <span style={{ marginRight: '0.5rem' }}>{item.icon}</span>
+                <span className="nav-icon">{item.icon}</span>
                 {item.label}
               </Link>
             ))}
@@ -72,7 +49,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </nav>
 
       {/* Main Content */}
-      <main style={{ minHeight: 'calc(100vh - 140px)' }}>
+      <main className="main-content">
         {children}
       </main>
     </div>
@@ -82,179 +59,65 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Dashboard Page
 const DashboardPage: React.FC = () => {
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        
+    <div className="page-container">
+      <div className="content-container">
         {/* Welcome Section */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '2rem',
-          marginBottom: '2rem',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          textAlign: 'center'
-        }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#1e293b', marginBottom: '1rem' }}>
-            Bem-vindo ao HangarOne! 🚁
-          </h1>
-          <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem' }}>
-            Sistema completo de gerenciamento para aeroclubes e pilotos
-          </p>
-          
+        <div className="card welcome-card">
+          <h1 className="card-title welcome-title">Bem-vindo ao HangarOne! 🚁</h1>
+          <p className="card-subtitle welcome-desc">Sistema completo de gerenciamento para aeroclubes e pilotos</p>
           {/* Quick Actions */}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/clubs" style={{ textDecoration: 'none' }}>
-              <button style={{
-                backgroundColor: '#0066cc',
-                color: 'white',
-                padding: '0.75rem 1.5rem',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}>
-                🏢 Gerenciar Aeroclubes
-              </button>
-            </Link>
-            <Link to="/pilots" style={{ textDecoration: 'none' }}>
-              <button style={{
-                backgroundColor: '#28a745',
-                color: 'white',
-                padding: '0.75rem 1.5rem',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}>
-                👨‍✈️ Cadastrar Piloto
-              </button>
-            </Link>
-            <Link to="/flights" style={{ textDecoration: 'none' }}>
-              <button style={{
-                backgroundColor: '#fd7e14',
-                color: 'white',
-                padding: '0.75rem 1.5rem',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}>
-                🛫 Agendar Voo
-              </button>
-            </Link>
+          <div className="quick-actions">
+            <Link to="/clubs" className="btn btn-primary">🏢 Gerenciar Aeroclubes</Link>
+            <Link to="/pilots" className="btn btn-success">👨‍✈️ Cadastrar Piloto</Link>
+            <Link to="/flights" className="btn btn-warning">🛫 Agendar Voo</Link>
           </div>
         </div>
-
-        
         {/* Stats Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '1.5rem',
-          marginBottom: '2rem'
-        }}>
-          
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '1.5rem',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            border: '1px solid #e2e8f0'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '2rem', marginRight: '1rem' }}>🏢</span>
+        <div className="stats-grid">
+          <div className="card stat-card">
+            <div className="stat-header"><span className="stat-icon">🏢</span>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', margin: 0 }}>
-                  Aeroclubes
-                </h3>
-                <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>Total cadastrados</p>
+                <h3 className="card-title stat-title">Aeroclubes</h3>
+                <p className="card-subtitle stat-subtitle">Total cadastrados</p>
               </div>
             </div>
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#0066cc' }}>2</div>
+            <div className="stat-value stat-blue">2</div>
           </div>
-
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '1.5rem',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            border: '1px solid #e2e8f0'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '2rem', marginRight: '1rem' }}>👨‍✈️</span>
+          <div className="card stat-card">
+            <div className="stat-header"><span className="stat-icon">👨‍✈️</span>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', margin: 0 }}>
-                  Pilotos
-                </h3>
-                <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>Ativos no sistema</p>
+                <h3 className="card-title stat-title">Pilotos</h3>
+                <p className="card-subtitle stat-subtitle">Ativos no sistema</p>
               </div>
             </div>
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#28a745' }}>83</div>
+            <div className="stat-value stat-green">83</div>
           </div>
-
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '1.5rem',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            border: '1px solid #e2e8f0'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '2rem', marginRight: '1rem' }}>✈️</span>
+          <div className="card stat-card">
+            <div className="stat-header"><span className="stat-icon">✈️</span>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', margin: 0 }}>
-                  Aeronaves
-                </h3>
-                <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>Em operação</p>
+                <h3 className="card-title stat-title">Aeronaves</h3>
+                <p className="card-subtitle stat-subtitle">Em operação</p>
               </div>
             </div>
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#fd7e14' }}>20</div>
+            <div className="stat-value stat-orange">20</div>
           </div>
-
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '1.5rem',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            border: '1px solid #e2e8f0'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '2rem', marginRight: '1rem' }}>🛫</span>
+          <div className="card stat-card">
+            <div className="stat-header"><span className="stat-icon">🛫</span>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', margin: 0 }}>
-                  Voos Hoje
-                </h3>
-                <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>Agendamentos</p>
+                <h3 className="card-title stat-title">Voos Hoje</h3>
+                <p className="card-subtitle stat-subtitle">Agendamentos</p>
               </div>
             </div>
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#dc3545' }}>5</div>
+            <div className="stat-value stat-red">5</div>
           </div>
         </div>
-
         {/* Recent Activity */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '1.5rem',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          border: '1px solid #e2e8f0'
-        }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', marginBottom: '1rem' }}>
-            📋 Atividades Recentes
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '4px', borderLeft: '4px solid #0066cc' }}>
-              <strong>João Silva</strong> agendou um voo para hoje às 14:00
-            </div>
-            <div style={{ padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '4px', borderLeft: '4px solid #28a745' }}>
-              <strong>Aeroclube SP</strong> cadastrou nova aeronave BR-1234
-            </div>
-            <div style={{ padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '4px', borderLeft: '4px solid #fd7e14' }}>
-              <strong>Manutenção</strong> programada para BR-5678 na próxima semana
-            </div>
+        <div className="card activity-card">
+          <h2 className="card-title activity-title">📋 Atividades Recentes</h2>
+          <div className="activity-list">
+            <div className="activity-item activity-blue"><strong>João Silva</strong> agendou um voo para hoje às 14:00</div>
+            <div className="activity-item activity-green"><strong>Aeroclube SP</strong> cadastrou nova aeronave BR-1234</div>
+            <div className="activity-item activity-orange"><strong>Manutenção</strong> programada para BR-5678 na próxima semana</div>
           </div>
         </div>
       </div>
